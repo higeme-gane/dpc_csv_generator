@@ -1,0 +1,48 @@
+name: DPC CSV 生成
+
+on:
+  workflow_dispatch:
+    inputs:
+      dpc6:
+        description: 'DPC6桁コード（6桁数字）'
+        required: true
+        default: '040040'
+      all_0_ope_1:
+        description: '患者数区分（0=全件 / 1=手術あり）'
+        required: true
+        type: choice
+        options:
+          - '0'
+          - '1'
+        default: '1'
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true   # Git LFS対応
+
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.4'
+
+      - name: Install R packages
+        run: |
+          Rscript -e '
+            install.packages(c("tidyverse", "arrow", "conflicted"),
+                             repos = "https://cran.rstudio.com",
+                             quiet = TRUE)
+          '
+
+      - name: Run R script
+        run: Rscript scripts/generate_dpc_csv.R "${{ inputs.dpc6 }}" "${{ inputs.all_0_ope_1 }}"
+
+      - name: Upload CSV as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dpc-csv-${{ inputs.dpc6 }}
+          path: "*.csv"
+          retention-days: 14
