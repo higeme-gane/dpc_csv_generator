@@ -29,17 +29,26 @@ jobs:
         with:
           r-version: '4.4'
 
-      - name: Install system dependencies (tidyverseに必要)
+      - name: Install system dependencies（tidyverseに必須）
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y libxml2-dev libssl-dev libcurl4-openssl-dev
+          sudo apt-get install -y libxml2-dev libssl-dev libcurl4-openssl-dev libfontconfig1-dev libharfbuzz-dev libfribidi-dev
 
-      - name: Install R packages
-        run: |
-          Rscript -e '
-            install.packages(c("tidyverse", "arrow", "conflicted"),
-                             repos = "https://cran.rstudio.com",
-                             quiet = TRUE)
+      - name: Install pak（高速パッケージ管理ツール）
+        run: Rscript -e 'install.packages("pak", repos = "https://cran.rstudio.com", quiet = TRUE)'
+
+      - name: Install R packages with pak（これで確実にインストール）
+        run: Rscript -e '
+          pak::pak(c("tidyverse", "arrow", "conflicted"))
+          '
+
+      - name: Verify packages（インストール確認）
+        run: Rscript -e '
+          library(tidyverse)
+          library(arrow)
+          library(conflicted)
+          conflicts_prefer(dplyr::filter)
+          cat("✅ All packages loaded successfully!\n")
           '
 
       - name: Run R script
