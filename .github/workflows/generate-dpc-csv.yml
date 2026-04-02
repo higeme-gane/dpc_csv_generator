@@ -38,17 +38,16 @@ jobs:
         run: Rscript -e 'install.packages("pak", repos = "https://cran.rstudio.com", quiet = TRUE)'
 
       - name: Install R packages with pak（これで確実にインストール）
-        run: Rscript -e '
-          pak::pak(c("tidyverse", "arrow", "conflicted"))
-          '
+        run: Rscript -e 'pak::pak(c("tidyverse", "arrow", "conflicted"))'
 
-      - name: Verify packages（インストール確認）
-        run: Rscript -e '
-          library(tidyverse)
-          library(arrow)
-          library(conflicted)
-          conflicts_prefer(dplyr::filter)
-          cat("✅ All packages loaded successfully!\n")
+      - name: Verify packages（インストール確認）   # ← ここを修正
+        run: |
+          Rscript -e '
+            library(tidyverse)
+            library(arrow)
+            library(conflicted)
+            conflicts_prefer(dplyr::filter)
+            cat("✅ All packages loaded successfully!\n")
           '
 
       - name: Run R script
