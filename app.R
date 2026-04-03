@@ -94,7 +94,7 @@ server <- function(input, output, session) {
   
   output$preview <- renderTable({
     head(result()$data, 10)
-  })
+  }, digits = 0)
   
   output$download <- downloadHandler(
     filename = function() { result()$filename },
