@@ -38,6 +38,10 @@ if (!exists("wide")) {
 # UI
 ui <- fluidPage(
   titlePanel("DPC6桁コード別 病院別患者数集計ツール（2016-2024）"),
+  tags$a("📖 使い方ガイド", 
+        href = "https://higeme-gane.github.io/dpc_csv_guide/",
+        target = "_blank",
+        style = "color:#1a5ea8; font-size:13px;"),
   sidebarLayout(
     sidebarPanel(
       textInput("dpc6", "DPC6桁コード", value = "040040", width = "100%"),
