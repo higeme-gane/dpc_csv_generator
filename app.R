@@ -64,8 +64,9 @@ server <- function(input, output, session) {
   
   result <- eventReactive(input$generate, {
     req(input$dpc6)
-    validate(need(nchar(input$dpc6) == 6 && grepl("^[0-9]+$", input$dpc6), 
-                  "DPCコードは6桁の数字で入力してください"))
+# ← ここを修正（数字＋アルファベット6桁を許可）
+    validate(need(nchar(input$dpc6) == 6 && grepl("^[0-9A-Za-z]+$", input$dpc6), 
+                  "DPCコードは6桁の英数字で入力してください（例: 040040 または 06007x）"))
     
     all_0_ope_1 <- as.numeric(input$all_0_ope_1)
     all_ope <- if (all_0_ope_1 == 0) "all" else "ope"
